@@ -25,9 +25,9 @@ object POCForNeo4j {
         .builder()
         .appName("POC for neo4j")
         .config("spark.master","local")
-        .config("spark.neo4j.bolt.url","bolt://localhost:7687/browser/")
+        .config("spark.neo4j.bolt.url","bolt://localhost:7687")
         .config("spark.neo4j.bolt.user","neo4j")
-        .config("spark.neo4j.bolt.password","neo4j")
+        .config("spark.neo4j.bolt.password","hadoop")
         .getOrCreate()
 
 
@@ -54,7 +54,9 @@ object POCForNeo4j {
     Neo4jDataFrame.mergeEdgeList(spark.sparkContext,peopleDF,("name",Seq("name")), ("BELONG_TO",Seq.empty),("age",Seq("age")))
 
     //read from neo4j to spark
-
+    val queryToReadFromNeo4j = "match(n) where n.age>30 return(n)"
+    val readDF = neo.cypher(queryToReadFromNeo4j).loadDataFrame()
+    readDF.show()
   }
 
 }
